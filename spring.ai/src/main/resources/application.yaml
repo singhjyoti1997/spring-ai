@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: spring.ai
+
+  ai:
+    chat:
+      client:
+        enabled: false
+
+    ollama:
+      base-url: http://localhost:11434
+      chat:
+        options:
+          model: llama3:8b
+
+    openai:
+      api-key: ${OPEN_API_KEY}
+      chat:
+        options:
+          model: gpt-4o
+          temperature: 0.2
+logging:
+  level:
+    org.springframework.ai.chat.client.advisor: DEBUG
+
+server:
+  port: 8081
+
