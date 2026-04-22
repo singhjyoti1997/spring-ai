@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 
 @RestController
 @RequestMapping
@@ -69,5 +70,11 @@ public class ChatController {
     public String generateEmail(@RequestParam String purpose, @RequestParam String tone
     ) {
         return chatServiceImp.generateEmail(purpose, tone);
+    }
+
+    @GetMapping("steaming-response")
+    public ResponseEntity<Flux<String>>  streamChat(@RequestParam(value = "q") String q) {
+        var resultResponse = chatServiceImp.streamChat(q);
+        return ResponseEntity.ok(resultResponse);
     }
 }

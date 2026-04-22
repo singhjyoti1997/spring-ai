@@ -44,7 +44,7 @@ public class AiConfig {
                 .build();
 
         return ChatClient.builder(ollamaChatModel)
-                .defaultAdvisors(new TokenPrintAdvisor(),new SimpleLoggerAdvisor(),new SafeGuardAdvisor(List.of("abuse")))
+//                .defaultAdvisors(new TokenPrintAdvisor(),new SimpleLoggerAdvisor(),new SafeGuardAdvisor(List.of("abuse")))
                 .defaultOptions(options)   // ✅ apply defaults
                 .build();
     }

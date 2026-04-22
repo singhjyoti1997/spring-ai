@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,12 @@ public class ChatServiceImp implements ChatService {
 
     @Value("classpath:prompts/email-generator.st")
     private Resource emailPromptResource;
+
+    @Value("classpath:prompts/system.st")
+    private Resource systemPrompt;
+
+    @Value("classpath:prompts/user-prompt.st")
+    private Resource userPrompt;
 
     private final ChatClient openAiChatClient;
     private final ChatClient ollamaChatClient;
@@ -126,6 +133,15 @@ public class ChatServiceImp implements ChatService {
                 .user(prompt)
                 .advisors(new SimpleLoggerAdvisor())
                 .call()
+                .content();
+    }
+
+    @Override
+    public Flux<String> streamChat(String query){
+        return ollamaChatClient.prompt()
+                .system(system -> system.text(this.systemPrompt))
+                .user(user ->user.text(this.userPrompt).param("concept", query ) )
+                .stream()
                 .content();
     }
 

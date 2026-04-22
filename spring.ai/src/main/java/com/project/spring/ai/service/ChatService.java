@@ -1,6 +1,7 @@
 package com.project.spring.ai.service;
 
 import com.project.spring.ai.entity.ChatField;
+import reactor.core.publisher.Flux;
 
 public interface ChatService {
 
@@ -13,4 +14,6 @@ public interface ChatService {
     String generateQuestions(String topic , String level);
 
     String generateEmail(String purpose, String tone );
+
+    Flux<String> streamChat(String q);
 }

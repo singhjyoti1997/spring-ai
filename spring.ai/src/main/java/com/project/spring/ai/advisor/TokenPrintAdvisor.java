@@ -24,8 +24,9 @@ public class TokenPrintAdvisor implements CallAdvisor, StreamAdvisor {
     }
 
     @Override
-    public Flux<ChatClientResponse> adviseStream(ChatClientRequest chatClientRequest, StreamAdvisorChain streamAdvisorChain) {
-        return null;
+    public Flux<ChatClientResponse> adviseStream(ChatClientRequest request,
+                                                 StreamAdvisorChain chain) {
+        return chain.nextStream(request);
     }
 
     @Override
