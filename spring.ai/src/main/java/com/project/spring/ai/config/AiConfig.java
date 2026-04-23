@@ -1,11 +1,8 @@
 package com.project.spring.ai.config;
 
-import com.project.spring.ai.advisor.TokenPrintAdvisor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
-import org.springframework.ai.chat.client.advisor.SafeGuardAdvisor;
-import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.ollama.OllamaChatModel;
@@ -13,47 +10,32 @@ import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.List;
-
 @Configuration
 @Slf4j
 public class AiConfig {
 
     @Bean(name = "openAiChatClient")
-    public ChatClient openAiChatModel(OpenAiChatModel openAiChatModel) {
-        return ChatClient.builder(openAiChatModel)
-                .build();
+    public ChatClient openAiChatClient(OpenAiChatModel model) {
+        return ChatClient.builder(model).build();
     }
 
-//    @Bean(name = "ollamaChatClient")
-//    public ChatClient ollamaChatClient(OllamaChatModel ollamaChatModel) {
-//
-////        ChatOptions options = ChatOptions.builder()
-////                .temperature(0.1)
-////                .model("llama3")
-////                .maxTokens(5000)
-////                .build();
-//
-//        return ChatClient.builder(ollamaChatModel)
-
-    /// /                .defaultOptions(options)
-//                .build();
-//    }
     @Bean(name = "ollamaChatClient")
-    public ChatClient ollamaChatClient(OllamaChatModel ollamaChatModel,ChatMemory chatMemory) {
-        log.info("ChatMemory Imp class"+chatMemory.getClass().getName());
+    public ChatClient ollamaChatClient(OllamaChatModel model, ChatMemory chatMemory) {
+
+        log.info("ChatMemory Impl: {}", chatMemory.getClass().getName());
+
+        MessageChatMemoryAdvisor advisor =
+                MessageChatMemoryAdvisor.builder(chatMemory).build();
 
         ChatOptions options = ChatOptions.builder()
-                .model("mistral")     // ✅ default model set
-                .temperature(0.1)     // ✅ JSON safe
+                .model("mistral")
+                .temperature(0.1)
                 .build();
-        MessageChatMemoryAdvisor messageChatMemoryAdvisor =MessageChatMemoryAdvisor.builder(chatMemory).build();
 
-        return ChatClient.builder(ollamaChatModel)
+        return ChatClient.builder(model)
+                .defaultAdvisors(advisor)
 //                .defaultAdvisors(new TokenPrintAdvisor(),new SimpleLoggerAdvisor(),new SafeGuardAdvisor(List.of("abuse")))
-                .defaultAdvisors(messageChatMemoryAdvisor)
-                .defaultOptions(options)   // ✅ apply defaults
+                .defaultOptions(options)
                 .build();
     }
-
 }
