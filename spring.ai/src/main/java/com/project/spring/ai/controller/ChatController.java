@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,9 +44,9 @@ public class ChatController {
     private ChatServiceImp chatServiceImp;
 
     @GetMapping("chat")
-    public ResponseEntity<String> chat(@RequestParam(value = "q") String q) {
+    public ResponseEntity<String> chat(@RequestParam(value = "q") String q, @RequestHeader(value = "userId")String userId) {
 //        var resultResponse = openAiChatClient.prompt(q).call().content();
-        var resultResponse = chatServiceImp.chat(q);
+        var resultResponse = chatServiceImp.chat(q,userId);
         return ResponseEntity.ok(resultResponse);
     }
 

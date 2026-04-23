@@ -5,7 +5,7 @@ import reactor.core.publisher.Flux;
 
 public interface ChatService {
 
-    String chat(String query);
+    String chat(String query,String userId);
 
     ChatField responseEntity(String query);
 

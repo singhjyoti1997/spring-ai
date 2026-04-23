@@ -4,6 +4,7 @@ import com.project.spring.ai.entity.ChatField;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.SafeGuardAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
+import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
@@ -39,14 +40,16 @@ public class ChatServiceImp implements ChatService {
 
 
     @Override
-    public String chat(String query) {
+    public String chat(String query,String userId) {
         String prompt = query;
         Prompt prompt1 = new Prompt(prompt);
-        String queryStr = "As a system expert :{prompt}";
+//        String queryStr = "As a system expert :{prompt}";
         var content = ollamaChatClient
                 .prompt()
+                .advisors(advisorSpec -> advisorSpec.param(ChatMemory.CONVERSATION_ID,userId))
 //                .advisors(new SafeGuardAdvisor(List.of("abusewords")))
-                .user(promptUserSpec -> promptUserSpec.text(queryStr).param("prompt", queryStr))
+//                .user(promptUserSpec -> promptUserSpec.text(queryStr).param("prompt", queryStr))
+                .user(prompt)
 //                .system("As a System")
                 .call()
                 .chatResponse()
